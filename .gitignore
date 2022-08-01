@@ -104,8 +104,9 @@ dist
 # TernJS port file
 .tern-port
 =======
+# db info file
 info.json
-node_modules/
+
+#node config files
 node
 npm
->>>>>>> 0371118 (init : 메인서버파일, 패키지락 파일 추가)
