@@ -197,7 +197,40 @@ app.get('/user/countUser', function(req,res)
     );
 }
 );
+app.get('/user/getInfoById', function(req,res){
+    var id = req.query.id;
+    var sql = 'select * from user where id =?'
 
+    connection.query(sql,id,function(err,result){
+        var isConnect = false;
+        var resultCode = 404;
+        var msg = '연결실패';
+        var result1 = null;
+        if (err){
+            console.log(err);
+        }
+        else{
+            isConnect = true;
+            resultCode = 200;
+
+            if(result.length ==0){
+                msg = '저장된 유저 데이터 없음';
+
+            }
+            else{
+                msg = '/user/getInfoById success';
+                result1 = result;
+            }
+        }
+        res.json({
+            'isConnect' : isConnect,
+            'resultCode' : resultCode,
+            'msg' : msg,
+            'result' : result1
+        });
+
+    });
+});
 
 app.get('/user/hasFbId', function(req,res){
     var id = req.query.id;
@@ -303,9 +336,6 @@ app.post('/post/create', function(req,res)
 
 
     
-
-
-
     
 
     var sql = 'insert into post (title, category_id, user_id, content, type, main_addr, addr_detail, product_img, validate_type, validate_date, validate_img, created_at, latitude, longitude, state)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
@@ -323,6 +353,41 @@ app.post('/post/create', function(req,res)
             resultCode = 200;
             isConnect = true;
             msg = result.insertId;
+        }
+        res.json({
+            'isConnect' : isConnect,
+            'resultCode' : resultCode,
+            'msg': msg,
+        });
+    }
+    );
+
+}
+);
+
+
+app.post('/post/review', function(req,res)
+{
+    var id = req.body.id;
+    var review = req.body.review;
+    var rate = req.body.rate;
+
+
+
+    var sql = 'update post set review = ?, rate = ? where id = ?';
+    var params = [review, rate, id]
+    connection.query(sql,params,function(err,result)
+    {   
+        var isConnect = false;
+        var resultCode=404;
+        var msg = "에러 발생";
+        if (err)
+            console.log(err);
+        else {
+            console.log('/post/review success');
+            resultCode = 200;
+            isConnect = true;
+            msg = '리뷰 작성 완료';
         }
         res.json({
             'isConnect' : isConnect,
