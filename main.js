@@ -244,7 +244,6 @@ app.get('/user/hasFbId', function(req,res){
 
 app.post('/user/join', function(req,res)
 {
-    var id = req.body.id;
     var fbId = req.body.fb_id;
     var email = req.body.email;
     var nickname= req.body.nickname;
@@ -255,8 +254,8 @@ app.post('/user/join', function(req,res)
     var createdAt = req.body.created_at;
     
 
-    var sql = 'insert into user (id,fb_id,email,nickname,home_addr,report_point,latitude,longitude,created_at) values (?,?,?,?,?,?,?,?,?)';
-    var params = [id,fbId,email,nickname,homeAddr,reportPoint,latitude,longitude,createdAt];
+    var sql = 'insert into user (fb_id,email,nickname,home_addr,report_point,latitude,longitude,created_at) values (?,?,?,?,?,?,?,?)';
+    var params = [fbId,email,nickname,homeAddr,reportPoint,latitude,longitude,createdAt];
 
     connection.query(sql,params,function(err,result)
     {   
@@ -269,7 +268,8 @@ app.post('/user/join', function(req,res)
             console.log('/user/join success');
             resultCode = 200;
             isConnect = true;
-            msg = "삽입 성공";
+            msg = result.insertId;
+            
         }
         res.json({
             'isConnect' : isConnect,
@@ -285,7 +285,6 @@ app.post('/user/join', function(req,res)
 
 app.post('/post/create', function(req,res)
 {
-    var id = req.body.id;
     var title = req.body.title;
     var category_id = req.body.category_id;
     var user_id= req.body.user_id;
@@ -309,8 +308,8 @@ app.post('/post/create', function(req,res)
 
     
 
-    var sql = 'insert into post (id, title, category_id, user_id, content, type, main_addr, addr_detail, product_img, validate_type, validate_date, validate_img, created_at, latitude, longitude, state)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-    var params = [id, title, category_id, user_id, content, type, main_addr, addr_detail, product_img, validate_type, validate_date, validate_img, created_at, latitude, longitude, state];
+    var sql = 'insert into post (title, category_id, user_id, content, type, main_addr, addr_detail, product_img, validate_type, validate_date, validate_img, created_at, latitude, longitude, state)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+    var params = [title, category_id, user_id, content, type, main_addr, addr_detail, product_img, validate_type, validate_date, validate_img, created_at, latitude, longitude, state];
 
     connection.query(sql,params,function(err,result)
     {   
@@ -323,7 +322,7 @@ app.post('/post/create', function(req,res)
             console.log('/post/create success');
             resultCode = 200;
             isConnect = true;
-            msg = "삽입 성공";
+            msg = result.insertId;
         }
         res.json({
             'isConnect' : isConnect,
