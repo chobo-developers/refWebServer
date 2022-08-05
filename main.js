@@ -63,11 +63,13 @@ app.get('/post/getPostByUserId', async (req, res) => {
     res.json(response);
 });
 
+
 app.get('/user/checkNickname', async (req, res) => {
     const nickname = req.query.nickname;
     const sql = 'SELECT * FROM user WHERE nickname = ?';
 
     let response = await requestDB(sql, nickname);
+
 
     if (response.result.length === 0) {
         response.result = false;
