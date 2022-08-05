@@ -42,7 +42,7 @@ app.get('/post/getPostOrderByTime',function(req,res){
 
     }
     else if(reqType == 2){
-        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
         // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
         title = '%'+req.query.title+'%'
         params.push(title);
@@ -151,7 +151,7 @@ app.get('/user/checkNickname',function(req,res)
                 'isConnect' : isConnect,
                 'resultCode' : resultCode,
                 'msg': msg,
-                'isExist' : isExist
+                'result' : isExist
             }
         );
     }
@@ -190,7 +190,7 @@ app.get('/user/countUser', function(req,res)
                 'isConnect' : isConnect,
                 'resultCode' : resultCode,
                 'msg': msg,
-                'count' : count
+                'result' : count
             }
         );
     }
@@ -265,7 +265,7 @@ app.get('/user/hasFbId', function(req,res){
             'isConnect' : isConnect,
             'resultCode' : resultCode,
             'msg': msg,
-            'hasfb' : hasFb
+            'result' : hasFb
         });
 
     }
@@ -295,19 +295,22 @@ app.post('/user/join', function(req,res)
         var isConnect = false;
         var resultCode=404;
         var msg = "에러 발생";
+        var result1 = null;
         if (err)
             console.log(err);
         else {
             console.log('/user/join success');
             resultCode = 200;
             isConnect = true;
-            msg = result.insertId;
+            msg = "/user/join success"
+            result1 = result.insertId;
             
         }
         res.json({
             'isConnect' : isConnect,
             'resultCode' : resultCode,
             'msg': msg,
+            'result' : result1
         });
     }
     );
@@ -346,18 +349,21 @@ app.post('/post/create', function(req,res)
         var isConnect = false;
         var resultCode=404;
         var msg = "에러 발생";
+        var result1 = null;
         if (err)
             console.log(err);
         else {
             console.log('/post/create success');
             resultCode = 200;
             isConnect = true;
-            msg = result.insertId;
+            msg = "create/post success";
+            result1 = result.insertId
         }
         res.json({
             'isConnect' : isConnect,
             'resultCode' : resultCode,
             'msg': msg,
+            'result' : result1
         });
     }
     );
@@ -381,6 +387,7 @@ app.post('/post/review', function(req,res)
         var isConnect = false;
         var resultCode=404;
         var msg = "에러 발생";
+        var result1 = null;
         if (err)
             console.log(err);
         else {
@@ -388,11 +395,13 @@ app.post('/post/review', function(req,res)
             resultCode = 200;
             isConnect = true;
             msg = '리뷰 작성 완료';
+            result1 = result.affectedRows;
         }
         res.json({
             'isConnect' : isConnect,
             'resultCode' : resultCode,
             'msg': msg,
+            'result' : result1
         });
     }
     );
