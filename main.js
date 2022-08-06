@@ -1,8 +1,7 @@
-import { createConnection } from 'mysql';
 import express from 'express';
 import bodyParser from 'body-parser';
-import info from './info.json';
 import { response } from 'express';
+import { requestDB } from './request'
 
 const app = express();
 app.use(bodyParser.json({ extended: true }));
@@ -11,38 +10,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.listen(3000, function () {
     console.log('서버 실행중..');
 });
-
-const requestDB = async (sql, params) => {
-    const connection = createConnection({
-        host: info.host,
-        user: info.user,
-        database: info.database,
-        password: info.password,
-        port: info.port,
-    });
-
-    let response = {
-        isConnect: false,
-        resultCode: 404,
-        msg: '연결 실패',
-        result: null,
-    };
-
-    connection.query(sql, params, (err, result) => {
-        if (!err) {
-            response = {
-                isConnect: true,
-                resultCode: 200,
-                msg: '연결성공',
-                result: result,
-            };
-
-            console.log('연결 성공');
-        }
-    });
-
-    return response;
-};
 
 app.get('/post/getPostOrderByTime', async (req, res) => {
     var currentTime = req.query.currentTime;
