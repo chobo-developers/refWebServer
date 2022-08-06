@@ -1,8 +1,10 @@
-var mysql = require('mysql');
-var express = require('express');
-var bodyParser = require('body-parser');
-var app = express();
-var info = require('./info.json');
+import { createConnection } from 'mysql';
+import express from 'express';
+import bodyParser from 'body-parser';
+import info from './info.json';
+import { response } from 'express';
+
+const app = express();
 app.use(bodyParser.json({ extended: true }));
 app.use(bodyParser.urlencoded({ extended: true }));
 
@@ -11,7 +13,7 @@ app.listen(3000, function () {
 });
 
 const requestDB = async (sql, params) => {
-    const connection = mysql.createConnection({
+    const connection = createConnection({
         host: info.host,
         user: info.user,
         database: info.database,
@@ -43,10 +45,8 @@ const requestDB = async (sql, params) => {
 };
 
 app.get('/post/getPostOrderByTime', async (req, res) => {
-    const query = req.query;
-
     var currentTime = req.query.currentTime;
-    var reqType = req.query.reqType;
+    var reqType = Number(req.query.reqType);
     var postType = req.query.postType;
     var currentIndex = String(req.query.currentIndex);
     var numberOfPost = String(req.query.num);
@@ -60,26 +60,24 @@ app.get('/post/getPostOrderByTime', async (req, res) => {
     var params = [currentTime, postType];
     // var params = [postType]
 
-    switch (reqType) {
-        case CATEGORY_SEARCH:
-            sql =
-                'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? ORDER BY created_at DESC LIMIT ';
-            // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
-            params.push(req.query.categoryId);
-
-        case TITLE_SEARCH:
-            sql =
-                'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
-            // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
-            title = '%' + req.query.title + '%';
-            params.push(title);
-
-        default:
-            sql =
-                'SELECT * FROM post WHERE created_at < ? AND  type = ?  ORDER BY created_at DESC LIMIT ';
-            // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+    // var params = [postType]
+    if (reqType === CATEGORY_SEARCH) {
+        sql =
+            'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? ORDER BY created_at DESC LIMIT ';
+        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        params.push(req.query.categoryId);
+    } else if (reqType === TITLE_SEARCH) {
+        sql =
+            'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
+        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        title = '%' + req.query.title + '%';
+        params.push(title);
+    } else {
+        sql =
+            'SELECT * FROM post WHERE created_at < ? AND  type = ?  ORDER BY created_at DESC LIMIT ';
+        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
     }
-    
+
     // params.push(String(parseFloat(latitude)-0.15))
     // params.push(String(parseFloat(latitude)+0.15))
     // params.push(String(parseFloat(longitude)-0.15))
@@ -92,160 +90,75 @@ app.get('/post/getPostOrderByTime', async (req, res) => {
     res.json(response);
 });
 
-app.get('/post/getPostByUserId', function (req, res) {
+app.get('/post/getPostByUserId', async (req, res) => {
     var sql = 'select * from post where user_id = ?';
     var userId = req.query.userId;
-    connection.query(sql, userId, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '연결 실패';
-        var result1 = null;
 
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('/post/getPostByUserId success');
-            isConnect = true;
-            resultCode = 200;
-            msg = '연결 성공';
-            result1 = result;
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: result1,
-        });
-    });
+    const response = await requestDB(sql, userId);
+    res.json(response);
 });
 
-app.get('/user/checkNickname', function (req, res) {
+app.get('/user/checkNickname', async (req, res) => {
     var nickname = req.query.nickname;
     var sql = 'SELECT * FROM user WHERE nickname = ?';
 
-    connection.query(sql, nickname, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '연결 실패';
-        var isExist = true;
-        if (err) {
-            console.log(err);
-        } else {
-            isConnect = true;
-            resultCode = 200;
-            console.log('/user/checkNickname success');
-            if (result.length == 0) {
-                isExist = false;
-                msg = '중복된 닉네임 없음';
-                console.log(msg);
-            } else {
-                isExist = true;
-                msg = '중복된 닉네임 있음';
-                console.log(msg);
-            }
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: isExist,
-        });
-    });
+    let response = await requestDB(sql, nickname);
+
+    if (response.result.length === 0) {
+        response.result = false;
+        response.msg = '중복된 닉네임 없음';
+    } else {
+        response.result = true;
+        response.msg = '중복된 닉네임 있음';
+    }
+
+    res.json(response);
 });
 
-app.get('/user/countUser', function (req, res) {
+app.get('/user/countUser', async (req, res) => {
     var sql = 'SELECT COUNT(*) as cnt FROM user';
 
-    connection.query(sql, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var count = 0;
-        var msg = '연결 실패';
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('/user/countUser');
-            isConnect = true;
-            resultCode = 200;
-            count = result[0]['cnt'];
-            msg = '연결 성공';
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: count,
-        });
-    });
+    // 빈배열이 가능할까?
+    let response = await requestDB(sql, []);
+
+    const count = response.result[0]?.cnt;
+    response.result = count;
+
+    res.json(response);
 });
-app.get('/user/getInfoById', function (req, res) {
+
+app.get('/user/getInfoById', async (req, res) => {
     var id = req.query.id;
     var sql = 'select * from user where id =?';
 
-    connection.query(sql, id, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '연결실패';
-        var result1 = null;
-        if (err) {
-            console.log(err);
-        } else {
-            isConnect = true;
-            resultCode = 200;
+    let response = await requestDB(sql, id);
 
-            if (result.length == 0) {
-                msg = '저장된 유저 데이터 없음';
-            } else {
-                msg = '/user/getInfoById success';
-                result1 = result;
-            }
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: result1,
-        });
-    });
+    response.msg = response.result.length
+        ? '저장된 유저 데이터 없음'
+        : '/user/getInfoById succes';
+
+    res.json(response);
 });
 
-app.get('/user/hasFbId', function (req, res) {
+app.get('/user/hasFbId', async (req, res) => {
     var id = req.query.id;
     var sql = 'select fb_id from user where id=?';
     var params = [id];
 
-    connection.query(sql, params, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '연결 실패';
-        var hasFb = false;
-        if (err) {
-            console.log(err);
-        } else {
-            msg = '연결 성공';
-            isConnect = true;
-            resultCode = 200;
-            hasFb = result[0]['fb_id'];
-            console.log('/user/hasFbId success');
-            if (result[0]['fb_id'] != '') {
-                msg = '파이어베이스 아이디 존재';
-                hasFb = true;
-            } else {
-                msg = '파이어베이스 아이디 없음';
-                hasFb = false;
-            }
-        }
+    let response = await requestDB(sql, params);
 
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: hasFb,
-        });
-    });
+    if (!!response[0]?.fb_id) {
+        response.msg = '파이어베이스 아이디 존재';
+        response.hasFb = true;
+    } else {
+        response.msg = '파이어베이스 아이디 없음';
+        response.hasFb = false;
+    }
+
+    res.json(response);
 });
 
-app.post('/user/join', function (req, res) {
+app.post('/user/join', async (req, res) => {
     var fbId = req.body.fb_id;
     var email = req.body.email;
     var nickname = req.body.nickname;
@@ -268,29 +181,13 @@ app.post('/user/join', function (req, res) {
         createdAt,
     ];
 
-    connection.query(sql, params, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '에러 발생';
-        var result1 = null;
-        if (err) console.log(err);
-        else {
-            console.log('/user/join success');
-            resultCode = 200;
-            isConnect = true;
-            msg = '/user/join success';
-            result1 = result.insertId;
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: result1,
-        });
-    });
+    response = await requestDB(sql, params);
+    response.result = response.result.insertId;
+
+    res.json(response);
 });
 
-app.post('/post/create', function (req, res) {
+app.post('/post/create', async (req, res) => {
     var title = req.body.title;
     var category_id = req.body.category_id;
     var user_id = req.body.user_id;
@@ -327,53 +224,22 @@ app.post('/post/create', function (req, res) {
         state,
     ];
 
-    connection.query(sql, params, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '에러 발생';
-        var result1 = null;
-        if (err) console.log(err);
-        else {
-            console.log('/post/create success');
-            resultCode = 200;
-            isConnect = true;
-            msg = 'create/post success';
-            result1 = result.insertId;
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: result1,
-        });
-    });
+    response = await requestDB(sql, params);
+    response.result = response.result.insertId;
+
+    res.json(response);
 });
 
-app.post('/post/review', function (req, res) {
+app.post('/post/review', async (req, res) => {
     var id = req.body.id;
     var review = req.body.review;
     var rate = req.body.rate;
 
     var sql = 'update post set review = ?, rate = ? where id = ?';
     var params = [review, rate, id];
-    connection.query(sql, params, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '에러 발생';
-        var result1 = null;
-        if (err) console.log(err);
-        else {
-            console.log('/post/review success');
-            resultCode = 200;
-            isConnect = true;
-            msg = '리뷰 작성 완료';
-            result1 = result.affectedRows;
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: result1,
-        });
-    });
+
+    response = await requestDB(sql, params);
+    response.result = response.result.affectedRows;
+
+    res.json(response);
 });
