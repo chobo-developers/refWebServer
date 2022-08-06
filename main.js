@@ -10,15 +10,41 @@ app.listen(3000, function () {
     console.log('서버 실행중..');
 });
 
-var connection = mysql.createConnection({
-    host: info.host,
-    user: info.user,
-    database: info.database,
-    password: info.password,
-    port: info.port,
-});
+const requestDB = async (sql, params) => {
+    const connection = mysql.createConnection({
+        host: info.host,
+        user: info.user,
+        database: info.database,
+        password: info.password,
+        port: info.port,
+    });
 
-app.get('/post/getPostOrderByTime', function (req, res) {
+    let response = {
+        isConnect: false,
+        resultCode: 404,
+        msg: '연결 실패',
+        result: null,
+    };
+
+    connection.query(sql, params, (err, result) => {
+        if (!err) {
+            response = {
+                isConnect: true,
+                resultCode: 200,
+                msg: '연결성공',
+                result: result,
+            };
+
+            console.log('연결 성공');
+        }
+    });
+
+    return response;
+};
+
+app.get('/post/getPostOrderByTime', async (req, res) => {
+    const query = req.query;
+
     var currentTime = req.query.currentTime;
     var reqType = req.query.reqType;
     var postType = req.query.postType;
@@ -28,51 +54,42 @@ app.get('/post/getPostOrderByTime', function (req, res) {
     var latitude = req.query.latitude;
     var longitude = req.query.longitude;
 
+    const CATEGORY_SEARCH = 1;
+    const TITLE_SEARCH = 2;
+
     var params = [currentTime, postType];
     // var params = [postType]
-    if (reqType == 1) {
-        sql =
-            'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? ORDER BY created_at DESC LIMIT ';
-        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
-        params.push(req.query.categoryId);
-    } else if (reqType == 2) {
-        sql =
-            'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
-        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
-        title = '%' + req.query.title + '%';
-        params.push(title);
-    } else {
-        sql =
-            'SELECT * FROM post WHERE created_at < ? AND  type = ?  ORDER BY created_at DESC LIMIT ';
-        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+
+    switch (reqType) {
+        case CATEGORY_SEARCH:
+            sql =
+                'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? ORDER BY created_at DESC LIMIT ';
+            // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+            params.push(req.query.categoryId);
+
+        case TITLE_SEARCH:
+            sql =
+                'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
+            // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+            title = '%' + req.query.title + '%';
+            params.push(title);
+
+        default:
+            sql =
+                'SELECT * FROM post WHERE created_at < ? AND  type = ?  ORDER BY created_at DESC LIMIT ';
+            // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
     }
+    
     // params.push(String(parseFloat(latitude)-0.15))
     // params.push(String(parseFloat(latitude)+0.15))
     // params.push(String(parseFloat(longitude)-0.15))
     // params.push(String(parseFloat(longitude)+0.15))
 
     sql = sql + numberOfPost + ' OFFSET ' + currentIndex;
-    connection.query(sql, params, function (err, result) {
-        var isConnect = false;
-        var resultCode = 404;
-        var msg = '연결 실패';
-        var result1 = null;
-        if (err) {
-            console.log(err);
-        } else {
-            console.log('/post/getPostOrderByTime success');
-            isConnect = true;
-            resultCode = 200;
-            msg = '연결 성공';
-            result1 = result;
-        }
-        res.json({
-            isConnect: isConnect,
-            resultCode: resultCode,
-            msg: msg,
-            result: result1,
-        });
-    });
+
+    const response = await requestDB(sql, params);
+
+    res.json(response);
 });
 
 app.get('/post/getPostByUserId', function (req, res) {
