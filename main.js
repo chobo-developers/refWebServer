@@ -1,7 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { response } from 'express';
-import { requestDB } from './request'
+import { requestDB } from './request';
 
 const app = express();
 app.use(bodyParser.json({ extended: true }));
@@ -12,22 +11,21 @@ app.listen(3000, function () {
 });
 
 app.get('/post/getPostOrderByTime', async (req, res) => {
-    var currentTime = req.query.currentTime;
-    var reqType = Number(req.query.reqType);
-    var postType = req.query.postType;
-    var currentIndex = String(req.query.currentIndex);
-    var numberOfPost = String(req.query.num);
-    var sql = '';
-    var latitude = req.query.latitude;
-    var longitude = req.query.longitude;
+    const currentTime = req.query.currentTime;
+    const reqType = Number(req.query.reqType);
+    const postType = req.query.postType;
+    const currentIndex = String(req.query.currentIndex);
+    const numberOfPost = String(req.query.num);
+    const sql = '';
+    const latitude = req.query.latitude;
+    const longitude = req.query.longitude;
 
     const CATEGORY_SEARCH = 1;
     const TITLE_SEARCH = 2;
 
-    var params = [currentTime, postType];
-    // var params = [postType]
+    const params = [currentTime, postType];
 
-    // var params = [postType]
+    // const params = [postType]
     if (reqType === CATEGORY_SEARCH) {
         sql =
             'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? ORDER BY created_at DESC LIMIT ';
@@ -52,22 +50,22 @@ app.get('/post/getPostOrderByTime', async (req, res) => {
 
     sql = sql + numberOfPost + ' OFFSET ' + currentIndex;
 
-    const response = await requestDB(sql, params);
+    let response = await requestDB(sql, params);
 
     res.json(response);
 });
 
 app.get('/post/getPostByUserId', async (req, res) => {
-    var sql = 'select * from post where user_id = ?';
-    var userId = req.query.userId;
+    const sql = 'select * from post where user_id = ?';
+    const userId = req.query.userId;
 
     const response = await requestDB(sql, userId);
     res.json(response);
 });
 
 app.get('/user/checkNickname', async (req, res) => {
-    var nickname = req.query.nickname;
-    var sql = 'SELECT * FROM user WHERE nickname = ?';
+    const nickname = req.query.nickname;
+    const sql = 'SELECT * FROM user WHERE nickname = ?';
 
     let response = await requestDB(sql, nickname);
 
@@ -83,7 +81,7 @@ app.get('/user/checkNickname', async (req, res) => {
 });
 
 app.get('/user/countUser', async (req, res) => {
-    var sql = 'SELECT COUNT(*) as cnt FROM user';
+    const sql = 'SELECT COUNT(*) as cnt FROM user';
 
     // 빈배열이 가능할까?
     let response = await requestDB(sql, []);
@@ -95,8 +93,8 @@ app.get('/user/countUser', async (req, res) => {
 });
 
 app.get('/user/getInfoById', async (req, res) => {
-    var id = req.query.id;
-    var sql = 'select * from user where id =?';
+    const id = req.query.id;
+    const sql = 'select * from user where id =?';
 
     let response = await requestDB(sql, id);
 
@@ -108,9 +106,9 @@ app.get('/user/getInfoById', async (req, res) => {
 });
 
 app.get('/user/hasFbId', async (req, res) => {
-    var id = req.query.id;
-    var sql = 'select fb_id from user where id=?';
-    var params = [id];
+    const id = req.query.id;
+    const sql = 'select fb_id from user where id=?';
+    const params = [id];
 
     let response = await requestDB(sql, params);
 
@@ -126,18 +124,18 @@ app.get('/user/hasFbId', async (req, res) => {
 });
 
 app.post('/user/join', async (req, res) => {
-    var fbId = req.body.fb_id;
-    var email = req.body.email;
-    var nickname = req.body.nickname;
-    var homeAddr = req.body.home_addr;
-    var reportPoint = req.body.report_point;
-    var latitude = req.body.latitude;
-    var longitude = req.body.longitude;
-    var createdAt = req.body.created_at;
+    const fbId = req.body.fb_id;
+    const email = req.body.email;
+    const nickname = req.body.nickname;
+    const homeAddr = req.body.home_addr;
+    const reportPoint = req.body.report_point;
+    const latitude = req.body.latitude;
+    const longitude = req.body.longitude;
+    const createdAt = req.body.created_at;
 
-    var sql =
+    const sql =
         'insert into user (fb_id,email,nickname,home_addr,report_point,latitude,longitude,created_at) values (?,?,?,?,?,?,?,?)';
-    var params = [
+    const params = [
         fbId,
         email,
         nickname,
@@ -148,32 +146,32 @@ app.post('/user/join', async (req, res) => {
         createdAt,
     ];
 
-    response = await requestDB(sql, params);
+    let response = await requestDB(sql, params);
     response.result = response.result.insertId;
 
     res.json(response);
 });
 
 app.post('/post/create', async (req, res) => {
-    var title = req.body.title;
-    var category_id = req.body.category_id;
-    var user_id = req.body.user_id;
-    var content = req.body.content;
-    var type = req.body.type;
-    var main_addr = req.body.main_addr;
-    var addr_detail = req.body.addr_detail;
-    var validate_type = req.body.validate_type;
-    var validate_date = req.body.validate_date;
-    var validate_img = req.body.validate_img;
-    var product_img = req.body.product_img;
-    var created_at = req.body.created_at;
-    var latitude = req.body.latitude;
-    var longitude = req.body.longitude;
-    var state = req.body.state;
+    const title = req.body.title;
+    const category_id = req.body.category_id;
+    const user_id = req.body.user_id;
+    const content = req.body.content;
+    const type = req.body.type;
+    const main_addr = req.body.main_addr;
+    const addr_detail = req.body.addr_detail;
+    const validate_type = req.body.validate_type;
+    const validate_date = req.body.validate_date;
+    const validate_img = req.body.validate_img;
+    const product_img = req.body.product_img;
+    const created_at = req.body.created_at;
+    const latitude = req.body.latitude;
+    const longitude = req.body.longitude;
+    const state = req.body.state;
 
-    var sql =
+    const sql =
         'insert into post (title, category_id, user_id, content, type, main_addr, addr_detail, product_img, validate_type, validate_date, validate_img, created_at, latitude, longitude, state)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
-    var params = [
+    const params = [
         title,
         category_id,
         user_id,
@@ -191,21 +189,21 @@ app.post('/post/create', async (req, res) => {
         state,
     ];
 
-    response = await requestDB(sql, params);
+    let response = await requestDB(sql, params);
     response.result = response.result.insertId;
 
     res.json(response);
 });
 
 app.post('/post/review', async (req, res) => {
-    var id = req.body.id;
-    var review = req.body.review;
-    var rate = req.body.rate;
+    const id = req.body.id;
+    const review = req.body.review;
+    const rate = req.body.rate;
 
-    var sql = 'update post set review = ?, rate = ? where id = ?';
-    var params = [review, rate, id];
+    const sql = 'update post set review = ?, rate = ? where id = ?';
+    const params = [review, rate, id];
 
-    response = await requestDB(sql, params);
+    let response = await requestDB(sql, params);
     response.result = response.result.affectedRows;
 
     res.json(response);
