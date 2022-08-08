@@ -109,17 +109,17 @@ app.get('/user/getInfoById', async (req, res) => {
 
 app.get('/user/hasFbId', async (req, res) => {
     const id = req.query.id;
-    const sql = 'select fb_id from user where id=?';
+    const sql = 'select * from user where fb_id=?';
     const params = [id];
 
     let response = await requestDB(sql, params);
 
-    if (!!response[0]?.fb_id) {
+    if (!(response.length === 0)) {
         response.msg = '파이어베이스 아이디 존재';
-        response.hasFb = true;
+        response.result = true;
     } else {
         response.msg = '파이어베이스 아이디 없음';
-        response.hasFb = false;
+        response.result = false;
     }
 
     res.json(response);

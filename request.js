@@ -18,19 +18,21 @@ export const requestDB = async (sql, params) => {
         result: null,
     };
 
-    return new Promise(connection.query(sql, params, (err, result) => {
-        if (!err) {
-            resolve(response = {
-                isConnect: true,
-                resultCode: 200,
-                msg: '연결성공',
-                result: result,
-                
-            });
-            console.log('연결 성공');
-        }
-        else {
-            reject(err);
-        }
-    }))
+    return new Promise((resolve, reject) => {
+        connection.query(sql, params, (err, result) => {
+            if (!err) {
+                resolve(
+                    (response = {
+                        isConnect: true,
+                        resultCode: 200,
+                        msg: '연결성공',
+                        result: result,
+                    })
+                );
+                console.log('연결 성공');
+            } else {
+                reject(err);
+            }
+        });
+    });
 };
