@@ -17,7 +17,7 @@ export const requestDB = async (sql, params) => {
         result: null,
     };
 
-    connection.query(sql, params, (err, result) => {
+    await connection.query(sql, params, (err, result) => {
         if (!err) {
             response = {
                 isConnect: true,
