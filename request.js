@@ -1,15 +1,18 @@
 import { createConnection } from 'mysql';
-import info from './info.json';
+import info from './info.json' assert {type : "json"};
 
-const connection = createConnection({
-    host: info.host,
-    user: info.user,
-    database: info.database,
-    password: info.password,
-    port: info.port,
-});
+
 
 export const requestDB = async (sql, params) => {
+
+    const connection = createConnection({
+        host: info.host,
+        user: info.user,
+        database: info.database,
+        password: info.password,
+        port: info.port,
+    });
+
     let response = {
         isConnect: false,
         resultCode: 404,
@@ -24,9 +27,10 @@ export const requestDB = async (sql, params) => {
                 resultCode: 200,
                 msg: '연결성공',
                 result: result,
+                
             };
-
             console.log('연결 성공');
+            
         }
     });
 

@@ -1,6 +1,6 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import { requestDB } from './request';
+import { requestDB } from './request.js';
 
 const app = express();
 app.use(bodyParser.json({ extended: true }));
