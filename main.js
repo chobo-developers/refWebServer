@@ -16,14 +16,14 @@ app.get('/post/getPostOrderByTime', async (req, res) => {
     const postType = req.query.postType;
     const currentIndex = String(req.query.currentIndex);
     const numberOfPost = String(req.query.num);
-    const sql = '';
+    let sql = '';
     const latitude = req.query.latitude;
     const longitude = req.query.longitude;
 
     const CATEGORY_SEARCH = 1;
     const TITLE_SEARCH = 2;
 
-    const params = [currentTime, postType];
+    let params = [currentTime, postType];
 
     // const params = [postType]
     if (reqType === CATEGORY_SEARCH) {
@@ -35,7 +35,7 @@ app.get('/post/getPostOrderByTime', async (req, res) => {
         sql =
             'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
         // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
-        title = '%' + req.query.title + '%';
+        const title = '%' + req.query.title + '%';
         params.push(title);
     } else {
         sql =
