@@ -1,8 +1,6 @@
 import { createConnection } from 'mysql';
 import info from './info.json' assert {type : "json"};
 
-
-
 export const requestDB = async (sql, params) => {
 
     const connection = createConnection({
@@ -20,19 +18,19 @@ export const requestDB = async (sql, params) => {
         result: null,
     };
 
-    await connection.query(sql, params, (err, result) => {
+    return new Promise(connection.query(sql, params, (err, result) => {
         if (!err) {
-            response = {
+            resolve(response = {
                 isConnect: true,
                 resultCode: 200,
                 msg: '연결성공',
                 result: result,
                 
-            };
+            });
             console.log('연결 성공');
-            
         }
-    });
-
-    return response;
+        else {
+            reject(err);
+        }
+    }))
 };
