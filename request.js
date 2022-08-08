@@ -1,15 +1,15 @@
 import { createConnection } from 'mysql';
 import info from './info.json';
 
-export const requestDB = async (sql, params) => {
-    const connection = createConnection({
-        host: info.host,
-        user: info.user,
-        database: info.database,
-        password: info.password,
-        port: info.port,
-    });
+const connection = createConnection({
+    host: info.host,
+    user: info.user,
+    database: info.database,
+    password: info.password,
+    port: info.port,
+});
 
+export const requestDB = async (sql, params) => {
     let response = {
         isConnect: false,
         resultCode: 404,
