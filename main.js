@@ -210,3 +210,17 @@ app.post('/post/review', async (req, res) => {
 
     res.json(response);
 });
+
+app.post('/user/updateNickname', async (req, res) => {
+    const id = req.body.id;
+    const nickname = req.body.nickname;
+    
+
+    const sql = 'update user set nickname = ? where id = ?';
+    const params = [nickname, id];
+
+    let response = await requestDB(sql, params);
+    response.result = response.result.affectedRows;
+
+    res.json(response);
+});
