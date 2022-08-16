@@ -104,8 +104,9 @@ dist
 # TernJS port file
 .tern-port
 =======
-# db info file
+# info, key file
 info.json
+firebaseKey.json
 
 #node config files
 node
