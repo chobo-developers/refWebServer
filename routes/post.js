@@ -3,6 +3,15 @@ import express from 'express';
 
 const router = express.Router();
 
+router.get('/getInfoById', async(req,res) => {
+    const id = req.query.id;
+    const sql = 'select * from post where id = ?';
+    let response = await requestDB(sql,id);
+    response.msg = response.result.length
+    ? '/post/getInfoById succes'
+    : '저장된 포스트 데이터 없음';
+    res.json(response);
+});
 
 router.get('/getPostOrderByTime', async (req, res) => {
     const currentTime = req.query.currentTime;
@@ -98,6 +107,16 @@ router.post('/create', async (req, res) => {
     let response = await requestDB(sql, params);
     response.result = response.result.insertId;
 
+    res.json(response);
+});
+
+router.post('/completeTrade', async(req,res) => {
+    const id = req.body.id;
+    const completeAt = req.body.completedAt;
+    const sql = 'update post set completed_at = ? where id = ?';
+    const params = [completeAt,id];
+    let response = await requestDB(sql,params);
+    response.result = response.result.affectedRows;
     res.json(response);
 });
 
