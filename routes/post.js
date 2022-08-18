@@ -14,42 +14,45 @@ router.get('/getInfoById', async(req,res) => {
 });
 
 router.get('/getPostOrderByTime', async (req, res) => {
+    const pageSize = 12;
+    const CATEGORY_SEARCH = 1;
+    const TITLE_SEARCH = 2;
+
     const currentTime = req.query.currentTime;
     const reqType = Number(req.query.reqType);
     const postType = req.query.postType;
-    const currentIndex = String(req.query.page);
-    const numberOfPost = String(req.query.pageSize);
+    const currentIndex = String((req.query.page-1)*pageSize);
+    const numberOfPost = String(pageSize);
     let sql = '';
     const latitude = req.query.latitude;
     const longitude = req.query.longitude;
 
-    const CATEGORY_SEARCH = 1;
-    const TITLE_SEARCH = 2;
+
 
     let params = [currentTime, postType];
 
     // const params = [postType]
     if (reqType === CATEGORY_SEARCH) {
-        sql =
-            'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? ORDER BY created_at DESC LIMIT ';
-        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        // sql =
+            // 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
         params.push(req.query.categoryId);
     } else if (reqType === TITLE_SEARCH) {
-        sql =
-            'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
-        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        // sql =
+            // 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
         const title = '%' + req.query.title + '%';
         params.push(title);
     } else {
-        sql =
-            'SELECT * FROM post WHERE created_at < ? AND  type = ?  ORDER BY created_at DESC LIMIT ';
-        // sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        // sql =
+            // 'SELECT * FROM post WHERE created_at < ? AND  type = ?  ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
     }
 
-    // params.push(String(parseFloat(latitude)-0.15))
-    // params.push(String(parseFloat(latitude)+0.15))
-    // params.push(String(parseFloat(longitude)-0.15))
-    // params.push(String(parseFloat(longitude)+0.15))
+    params.push(String(parseFloat(latitude)-0.15))
+    params.push(String(parseFloat(latitude)+0.15))
+    params.push(String(parseFloat(longitude)-0.15))
+    params.push(String(parseFloat(longitude)+0.15))
 
     sql = sql + numberOfPost + ' OFFSET ' + currentIndex;
 

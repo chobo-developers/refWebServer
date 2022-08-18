@@ -17,6 +17,17 @@ router.get('/getInfoById', async (req, res) => {
     res.json(response);
 });
 
+router.post('/updateFcmToken', async(req,res) => {
+    const id = req.body.id;
+    const fcmToken = req.body.fcmToken;
+    const sql = 'update user set fcm_token = ? where id = ?';
+    const params = [id,fcmToken];
+    let response = await requestDB(sql,params);
+    response.result = response.result.affectedRows;
+    res.json(response);
+
+});
+
 
 router.get('/checkNickname', async (req, res) => {
     const nickname = req.query.nickname;
