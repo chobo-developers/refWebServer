@@ -10,7 +10,7 @@ router.get('/getInfoById', async(req,res) => {
     response.msg = response.result.length
     ? '/post/getInfoById succes'
     : '저장된 포스트 데이터 없음';
-    res.json(response);
+    res.json(response);x
 });
 
 router.get('/getPostOrderByTime', async (req, res) => {
@@ -81,14 +81,18 @@ router.post('/create', async (req, res) => {
     const validate_type = req.body.validate_type;
     const validate_date = req.body.validate_date;
     const validate_img = req.body.validate_img;
-    const product_img = req.body.product_img;
+    const image1 = req.body.image1;
+    // const image2 = req.body.image2;
+    // const image3 = req.body.image3;
     const created_at = req.body.created_at;
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const state = req.body.state;
 
     const sql =
-        'insert into post (title, category_id, user_id, content, type, main_addr, addr_detail, product_img, validate_type, validate_date, validate_img, created_at, latitude, longitude, state)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+        'insert into post (title, category_id, user_id, content, type, main_addr, addr_detail, image1, validate_type, validate_date, validate_img, created_at, latitude, longitude, state)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+        // 'insert into post (title, category_id, user_id, content, type, main_addr, addr_detail, image1, image2, image3, validate_type, validate_date, validate_img, created_at, latitude, longitude, state)  values (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)';
+ 
     const params = [
         title,
         category_id,
@@ -97,7 +101,9 @@ router.post('/create', async (req, res) => {
         type,
         main_addr,
         addr_detail,
-        product_img,
+        image1,
+        // image2,
+        // image3,
         validate_type,
         validate_date,
         validate_img,
