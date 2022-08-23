@@ -1,21 +1,45 @@
 import { requestDB } from './request.js';
 import express from 'express';
-import serviceAccount from './firebaseKey.json' assert {type : "json"};
-import { admin } from 'firebase-admin/app';
-
+import { requestFcm } from './fcmService.js';
 
 const router = express.Router();
 
-router.post('/makeChat',async (req,res)=>{
-    const fromId = res.body.fromId;
-    const message = res.body.message;
-    const toId = res.body.toID;
-    /* 
-    1.포스트 id 받으면 toid 로 채팅 있는 지 검색
-    2.
-    
-    */
+router.post('/sendMessage',async (req,res)=>{
+    const chatId = req.body.chatId;
+    const message = req.body.message;
+    const title = "보낸사람: " + req.body.fromId;
+    const toId = req.body.toID;
+    const createdAt = req.body.createdAt;
+    const params = [chatId,createdAt,message,req.body.fromId];
 
-    
+    let sql = 'select fcm_token from user where id = ?';
+    let response = await requestDB(sql,toId);
+    const token = response.result[0].fcm_token;
+    requestFcm(token, title, message);
 
+    sql = 'insert into message (chat_id, created_at, content, from) value (?,?,?,?)';
+    response = await requestDB(sql,params);
+
+    console.log(response.msg);
 });
+
+router.post('/makeChat',async (req,res)=>{
+    const postId = req.body.postId;
+    const contactId = req.body.contactId;
+    const id = req.body.id;
+    const chatId = String(postId) + contactId;
+    const createdAt = req.body.createdAt;
+
+    let sql = 'select from chat where id = ?';
+    let response = await requestDB(sql,chatId);
+    if (response.result.length === 0 ){
+        sql = 'insert into chat (id, post_id, user_id, created_at) value (?,?,?,?)';
+        const params = [id,postId,contactId,createdAt];
+        response = await requestDB(sql,params);
+        console.log("new chat created successfully");
+
+    }
+    else{
+        console.log("chatId is already in use");
+    }
+})

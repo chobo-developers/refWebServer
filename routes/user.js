@@ -19,9 +19,9 @@ router.get('/getInfoById', async (req, res) => {
 
 router.post('/updateFcmToken', async(req,res) => {
     const id = req.body.id;
-    const fcmToken = req.body.fcmToken;
+    const fcmToken = req.body.content;
     const sql = 'update user set fcm_token = ? where id = ?';
-    const params = [id,fcmToken];
+    const params = [fcmToken,id];
     let response = await requestDB(sql,params);
     response.result = response.result.affectedRows;
     res.json(response);
