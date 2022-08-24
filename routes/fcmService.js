@@ -9,7 +9,7 @@ const fcm = new FCM(serverKey);
 export const requestFcm = function (token,title,content){
     
     const message = {
-        to: token,  //앱에서 복사한 토큰 
+        to: token,  //db에서 가져온 토큰
         
         notification: {
             title: title, //알림 제목
