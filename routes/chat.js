@@ -12,11 +12,13 @@ router.post('/sendMessage',async (req,res)=>{
     const createdAt = req.body.createdAt;
     const params = [chatId,createdAt,message,req.body.fromId];
 
+    //fcm에 정보 전달
     let sql = 'select fcm_token from user where id = ?';
     let response = await requestDB(sql,toId);
     const token = response.result[0].fcm_token;
     requestFcm(token, title, message);
 
+    //메시지 디비에 삽입
     sql = 'insert into message (chat_id, created_at, content, from) value (?,?,?,?)';
     response = await requestDB(sql,params);
 
