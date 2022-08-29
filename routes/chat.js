@@ -4,6 +4,8 @@ import { requestFcm } from './fcmService.js';
 
 const router = express.Router();
 
+
+//메시지 보내기
 router.post('/sendMessage',async (req,res)=>{
     const chatId = req.body.chatId;
     const message = req.body.message;
