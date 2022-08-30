@@ -2,6 +2,7 @@
 import serviceAccount from './firebaseKey.json' assert {type : "json"};
 import { admin } from 'firebase-admin/app';
 
+//firebase-admin 과 차이 알아보고 수정예정
 const FCM = require('fcm-node');
 const serverKey = ''; //서버키
 const fcm = new FCM(serverKey);
@@ -21,7 +22,7 @@ export const requestFcm = function (token,title,content){
             my_another_key: 'my another value'
         }
     };
-
+    //오류처리
     fcm.send(message, function(err, response){
         if (err) {
             console.log("Something has gone wrong!");
