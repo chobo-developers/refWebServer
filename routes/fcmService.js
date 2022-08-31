@@ -1,9 +1,9 @@
 
 // import serviceAccount from './firebaseKey.json' assert {type : "json"};
 // import { admin } from 'firebase-admin/app';
-
+import { FCM } from 'fcm-node';
 //firebase-admin 과 차이 알아보고 수정예정
-const FCM = require('fcm-node');
+// const FCM = require('fcm-node');
 const serverKey = ''; //서버키
 const fcm = new FCM(serverKey);
 // admin.initializeApp({

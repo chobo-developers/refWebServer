@@ -26,7 +26,7 @@ router.post('/sendMessage',async (req,res)=>{
         toId = response.result[0].writer_id;
     }
 
-    //fcm에 정보 전달
+    //fcm에 메시지 받는사람 fcm_token 정보 전달
     sql = 'select fcm_token from user where id = ?';
     response = await requestDB(sql,toId);
     const token = response.result[0].fcm_token;
