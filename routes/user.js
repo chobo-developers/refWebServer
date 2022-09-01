@@ -50,7 +50,7 @@ router.get('/checkNickname', async (req, res) => {
 router.get('/countUser', async (req, res) => {
     const sql = 'SELECT COUNT(*) as cnt FROM user';
 
-    // 빈배열이 가능할까?
+    // params 오버라이딩 하지않고 그냥 빈 배열 입력
     let response = await requestDB(sql, []);
 
     const count = response.result[0]?.cnt;

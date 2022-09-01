@@ -49,6 +49,9 @@ router.get('/getPostOrderByTime', async (req, res) => {
         sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
     }
 
+    console.log(req.query.postType);
+    console.log(req.query.postType);
+    console.log(req.query.postType);
     params.push(String(parseFloat(latitude)-0.15))
     params.push(String(parseFloat(latitude)+0.15))
     params.push(String(parseFloat(longitude)-0.15))
