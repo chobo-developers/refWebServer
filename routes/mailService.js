@@ -14,8 +14,8 @@ export const sendEmail = async (id, content) => {
     const emailOptions = { // 옵션값 설정
         from: info.gmail,
         to: info.gmail,
-        subject: `신고 접수`,
-        html: `content`,
+        subject: "user id: " + id + `로 부터 신고 접수`,
+        html: content,
     };
 
     // 전송
