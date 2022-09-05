@@ -1,6 +1,6 @@
 import { requestDB } from './request.js';
 import express from 'express';
-
+import { sendEmail } from './mailService.js';
 const router = express.Router();
 
 router.get('/getInfoById', async(req,res) => {
@@ -130,6 +130,22 @@ router.post('/completeTrade', async(req,res) => {
     let response = await requestDB(sql,params);
     response.result = response.result.affectedRows;
     res.json(response);
+});
+
+router.post('/report', async(req,res) => {
+    const id = req.body.id;
+    const content = req.body.data;
+    // const postId = req.body.postId;
+    const sql = 'update mainDB.user set report_point = mainDB.user.report_point+1 where id = (select user_id from mainDB.post where id = 1)';
+
+
+    sendEmail(id,content).then(function(resolvedData){
+        res.json(resolvedData);
+        console.log("전송완료");
+    }).catch(function(error){
+        res.json(error);
+        console.log("전송실패");
+    });
 });
 
 router.post('/review', async (req, res) => {

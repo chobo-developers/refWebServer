@@ -1,21 +1,39 @@
-import nodemailer from 'nodemailer';
+import * as nodemailer from 'nodemailer';
+import smtpTransporter from 'nodemailer-smtp-transport';
 import info from './info.json' assert {type : "json"};
 
 export const sendEmail = async (id, content) => {
-    const transporter = nodemailer.createTransport({
-        service: `gmail`,
-        port: 465, //smtp 포트 이용
-        secure: true, // true for 465, false for other ports
-        auth: { 
-            user: info.gmail,
-            pass: info.password,
-        },
-    });
+
+    // const transporter = nodemailer.createTransport({
+    //     service: `gmail`,
+    //     port: 465, //smtp 포트 이용
+    //     secure: true, // true for 465, false for other ports
+    //     auth: { 
+    //         user: info.gmail,
+    //         pass: info.mailpassword,
+    //     },
+    // });
+    let response = {
+        isConnect: false,
+        resultCode: 404,
+        msg: '연결 실패',
+        result: null,
+    };
+
+    var transporter = nodemailer.createTransport(smtpTransporter({
+        service: 'Naver',
+        host: 'smtp.naver.com',
+        auth: {
+            user: info.mail,     //보내는 분의 메일계정
+            pass: info.mailpassword
+        }
+    }));
+
     const emailOptions = { // 옵션값 설정
-        from: info.gmail,
-        to: info.gmail,
+        from: info.mail,
+        to: info.mail,
         subject: "user id: " + id + `로 부터 신고 접수`,
-        html: content,
+        html: content
     };
 
     // 전송
@@ -24,10 +42,15 @@ export const sendEmail = async (id, content) => {
         transporter.sendMail(emailOptions, (err, res) => {
             if (err) {
                 console.log(`failed... => `, err);
-                reject(err);
+                reject(response);
             } else {
                 console.log(`succeed... => `, res);
-                resolve(res);
+                resolve(response = {
+                    isConnect: true,
+                    resultCode: 200,
+                    msg: '전송완료',
+                    result: res
+                });
             }
             transporter.close();
         });

@@ -17,7 +17,22 @@ router.get('/getInfoById', async (req, res) => {
     res.json(response);
 });
 
+router.get('/getInfoByFbId', async (req, res) => {
+    const fbId = req.query.fbId;
+    const sql = 'select * from user where fb_id =?';
+
+    let response = await requestDB(sql, fbId);
+
+    response.msg = response.result.length
+        ? '/user/getInfoById succes'
+        : '저장된 유저 데이터 없음';
+
+    res.json(response);
+});
+
 router.post('/updateFcmToken', async(req,res) => {
+
+    
     const id = req.body.id;
     const fcmToken = req.body.content;
     const sql = 'update user set fcm_token = ? where id = ?';
@@ -78,8 +93,8 @@ router.get('/hasFbId', async (req, res) => {
     const params = [id];
 
     let response = await requestDB(sql, params);
-
-    if (!(response.result.length === 0)) {
+    console.log(id);
+    if ((response.result.length === 0)) {
         response.msg = '파이어베이스 아이디 없음';
         response.result = false;
     } else {
