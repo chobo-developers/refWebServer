@@ -122,7 +122,7 @@ router.post('/join', async (req, res) => {
 
 router.post('/updateNickname', async (req, res) => {
     const id = req.body.id;
-    const nickname = req.body.nickname;
+    const nickname = req.body.data;
     
 
     const sql = 'update user set nickname = ? where id = ?';
