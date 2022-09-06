@@ -135,9 +135,10 @@ router.post('/completeTrade', async(req,res) => {
 router.post('/report', async(req,res) => {
     const id = req.body.id;
     const content = req.body.data;
-    // const postId = req.body.postId;
+    const postId = req.body.postId;
     const sql = 'update mainDB.user set report_point = mainDB.user.report_point+1 where id = (select user_id from mainDB.post where id = 1)';
-
+    
+    // const response = 
 
     sendEmail(id,content).then(function(resolvedData){
         res.json(resolvedData);

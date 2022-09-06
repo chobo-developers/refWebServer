@@ -114,9 +114,10 @@ router.post('/join', async (req, res) => {
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const createdAt = req.body.created_at;
+    const fcmToken = req.body.fcm;
 
     const sql =
-        'insert into user (fb_id,email,nickname,home_addr,report_point,latitude,longitude,created_at) values (?,?,?,?,?,?,?,?)';
+        'insert into user (fb_id,email,nickname,home_addr,report_point,latitude,longitude,created_at,fcm_token) values (?,?,?,?,?,?,?,?,?)';
     const params = [
         fbId,
         email,
@@ -126,6 +127,7 @@ router.post('/join', async (req, res) => {
         latitude,
         longitude,
         createdAt,
+        fcmToken
     ];
 
     let response = await requestDB(sql, params);
