@@ -2,7 +2,7 @@ import * as nodemailer from 'nodemailer';
 import smtpTransporter from 'nodemailer-smtp-transport';
 import info from './info.json' assert {type : "json"};
 
-export const sendEmail = async (id, content) => {
+export const sendEmail = async (id, postId,content) => {
 
     // const transporter = nodemailer.createTransport({
     //     service: `gmail`,
@@ -33,7 +33,7 @@ export const sendEmail = async (id, content) => {
         from: info.mail,
         to: info.mail,
         subject: "user id: " + id + `로 부터 신고 접수`,
-        html: content
+        html: "post id:" + postId + content
     };
 
     // 전송

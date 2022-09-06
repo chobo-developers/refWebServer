@@ -136,17 +136,22 @@ router.post('/report', async(req,res) => {
     const id = req.body.id;
     const content = req.body.data;
     const postId = req.body.postId;
-    const sql = 'update mainDB.user set report_point = mainDB.user.report_point+1 where id = (select user_id from mainDB.post where id = 1)';
+    const sql = 'update mainDB.user set report_point = mainDB.user.report_point+1 where id = (select user_id from mainDB.post where id = ?)';
     
-    // const response = 
-
-    sendEmail(id,content).then(function(resolvedData){
-        res.json(resolvedData);
-        console.log("전송완료");
+    requestDB(sql, postId).then(function(DBresloved){
+        sendEmail(id,postId,content).then(function(resolvedData){
+            res.json(resolvedData);
+            console.log("전송완료");
+        }).catch(function(error){
+            res.json(error);
+            console.log("전송실패");
+        });
     }).catch(function(error){
+        console.log("sql 입력 실패");
         res.json(error);
-        console.log("전송실패");
     });
+
+
 });
 
 router.post('/review', async (req, res) => {
