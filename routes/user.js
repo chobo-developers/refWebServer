@@ -151,6 +151,19 @@ router.post('/updateNickname', async (req, res) => {
     res.json(response);
 });
 
+router.delete('/', async (req, res) => {
+    const id = req.body.id;
+    
+
+    const sql = 'update user set nickname = ? where id = ?';
+    const params = [nickname, id];
+
+    let response = await requestDB(sql, params);
+    response.result = response.result.affectedRows;
+
+    res.json(response);
+});
+
 
 
 export default router;
