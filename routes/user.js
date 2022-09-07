@@ -74,18 +74,6 @@ router.get('/countUser', async (req, res) => {
     res.json(response);
 });
 
-router.get('/getInfoById', async (req, res) => {
-    const id = req.query.id;
-    const sql = 'select * from user where id =?';
-
-    let response = await requestDB(sql, id);
-
-    response.msg = response.result.length
-        ? '저장된 유저 데이터 없음'
-        : '/user/getInfoById succes';
-
-    res.json(response);
-});
 
 router.get('/hasFbId', async (req, res) => {
     const id = req.query.id;
@@ -145,21 +133,22 @@ router.post('/updateNickname', async (req, res) => {
     const sql = 'update user set nickname = ? where id = ?';
     const params = [nickname, id];
 
-    let response = await requestDB(sql, params);
-    response.result = response.result.affectedRows;
+    let response = await requestDB(sql, params)
+    response.result = response.result.affectedRows?
+    '실패'
+    :'성공';
 
     res.json(response);
 });
 
+//delete 임시
 router.delete('/', async (req, res) => {
-    const id = req.body.id;
-    
-
-    const sql = 'update user set nickname = ? where id = ?';
-    const params = [nickname, id];
+    const id = req.query.id;
+    const sql = 'delete from user where id = ?';
 
     let response = await requestDB(sql, params);
-    response.result = response.result.affectedRows;
+    response.result = response.result.affectedRows
+    ?true : false ;
 
     res.json(response);
 });
