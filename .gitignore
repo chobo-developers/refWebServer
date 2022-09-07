@@ -107,6 +107,7 @@ dist
 # info, key file
 info.json
 firebaseKey.json
+service-account-file.json
 
 #node config files
 node

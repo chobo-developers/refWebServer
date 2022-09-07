@@ -1,6 +1,6 @@
 import { requestDB } from '../service/request.js';
 import express from 'express';
-import { requestFcm } from '../service/fcmService.js';
+// import { requestFcm } from '../service/fcmService.js';
 
 const router = express.Router();
 
@@ -60,3 +60,5 @@ router.post('/makeChat',async (req,res)=>{
         console.log("chatId is already in use");
     }
 })
+
+export default router;
