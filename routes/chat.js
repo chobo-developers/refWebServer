@@ -1,6 +1,6 @@
-import { requestDB } from './request.js';
+import { requestDB } from '../service/request.js';
 import express from 'express';
-import { requestFcm } from './fcmService.js';
+import { requestFcm } from '../service/fcmService.js';
 
 const router = express.Router();
 

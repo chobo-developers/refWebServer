@@ -1,5 +1,5 @@
 import { createPool } from 'mysql';
-import info from './info.json' assert {type : "json"};
+import info from '../info.json' assert {type : "json"};
 
 const pool = createPool({
     connectionLimit: 50,//최대 연결가능한 connetion수 설정 

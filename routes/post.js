@@ -1,6 +1,6 @@
-import { requestDB } from './request.js';
+import { requestDB } from '../service/request.js';
 import express from 'express';
-import { sendEmail } from './mailService.js';
+import { sendEmail } from '../service/mailService.js';
 const router = express.Router();
 
 router.get('/getInfoById', async(req,res) => {

@@ -1,6 +1,6 @@
 import * as nodemailer from 'nodemailer';
 import smtpTransporter from 'nodemailer-smtp-transport';
-import info from './info.json' assert {type : "json"};
+import info from '../info.json' assert {type : "json"};
 
 export const sendEmail = async (id, postId,content) => {
 
