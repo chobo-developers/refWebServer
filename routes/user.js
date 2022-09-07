@@ -135,18 +135,18 @@ router.post('/updateNickname', async (req, res) => {
 
     let response = await requestDB(sql, params)
     response.result = response.result.affectedRows?
-    '실패'
-    :'성공';
+    '성공'
+    :'실패';
 
     res.json(response);
 });
 
 //delete 임시
-router.delete('/', async (req, res) => {
+router.delete('', async (req, res) => {
     const id = req.query.id;
     const sql = 'delete from user where id = ?';
 
-    let response = await requestDB(sql, params);
+    let response = await requestDB(sql, id);
     response.result = response.result.affectedRows
     ?true : false ;
 
