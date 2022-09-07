@@ -43,7 +43,7 @@
 //     });
 // }
 
-import * as admin from 'firebase-admin/app';
+import admin from 'firebase-admin';
 import serviceAccount from '../service-account-file.json' assert {type : "json"};
 import express from 'express';
 const router = express.Router();
@@ -55,31 +55,31 @@ admin.initializeApp({
 
 
 router.get('/test', (req, res, next) => {
-let idx = String(req.body.idx);
-let title = req.body.title;
-let body = req.body.body;
+    let idx = String(req.body.idx);
+    let title = req.body.title;
+    let body = req.body.body;
 
-let target_token =
-    '토큰 값..';
+    let target_token =
+        '토큰 값..';
 
-let message = {
-    data: {
-    title: 'test title',
-    body : 'test body',
-    },
-    token: target_token,
-}
+    let message = {
+        data: {
+        title: 'test title',
+        body : 'test body',
+        },
+        token: target_token,
+    }
 
-admin
-    .messaging()
-    .send(message)
-    .then(function (response) {
-    res.status(200).send("push success");
-    console.log('Successfully sent message: : ', response)
-    })
-    .catch(function (err) {
-    console.log('Error Sending message!!! : ', err)
-    })
-})
+    admin
+        .messaging()
+        .send(message)
+        .then(function (response) {
+        res.status(200).send("push success");
+        console.log('Successfully sent message: : ', response)
+        })
+        .catch(function (err) {
+        console.log('Error Sending message!!! : ', err)
+        })
+    });
 
 export default router;

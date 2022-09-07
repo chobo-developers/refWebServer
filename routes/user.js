@@ -32,9 +32,8 @@ router.get('/getInfoByFbId', async (req, res) => {
 
 router.post('/updateFcmToken', async(req,res) => {
 
-    
     const id = req.body.id;
-    const fcmToken = req.body.content;
+    const fcmToken = req.body.data;
     const sql = 'update user set fcm_token = ? where id = ?';
     const params = [fcmToken,id];
     let response = await requestDB(sql,params);
@@ -148,7 +147,7 @@ router.delete('', async (req, res) => {
 
     let response = await requestDB(sql, id);
     response.result = response.result.affectedRows
-    ?true : false ;
+    ? true : false ;
 
     res.json(response);
 });
