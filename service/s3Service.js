@@ -22,3 +22,36 @@ export const upload = multer({
         },
     }),
 });
+
+//s3 delete
+export const deleteFile = (key) => {
+    const params = {
+        Bucket: info.AWS_BUCKET_NAME,
+        Key: key,
+    };
+    s3.deleteObject(params, (err, data) => {
+        if (err) console.log(err, err.stack);
+        else console.log(data);
+    });
+}
+//s3 download
+export const downloadFile = (key) => {
+    const params = {
+        Bucket: info.AWS_BUCKET_NAME,
+        Key: key,
+    };
+    s3.getObject(params, (err, data) => {
+        if (err) console.log(err, err.stack);
+        else console.log(data);
+    });
+}
+//s3 list
+export const listFile = () => {
+    const params = {
+        Bucket: info.AWS_BUCKET_NAME,
+    };
+    s3.listObjects(params, (err, data) => {
+        if (err) console.log(err, err.stack);
+        else console.log(data);
+    });
+}
