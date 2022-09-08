@@ -3,7 +3,6 @@ import express from 'express';
 
 const router = express.Router();
 
-
 router.get('/getInfoById', async (req, res) => {
     const id = req.query.id;
     const sql = 'select * from user where id =?';
@@ -80,7 +79,6 @@ router.get('/hasFbId', async (req, res) => {
     const params = [id];
 
     let response = await requestDB(sql, params);
-    console.log(id);
     if ((response.result.length === 0)) {
         response.msg = '파이어베이스 아이디 없음';
         response.result = false;
@@ -155,3 +153,4 @@ router.delete('', async (req, res) => {
 
 
 export default router;
+

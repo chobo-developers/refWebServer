@@ -50,7 +50,6 @@ export const requestDB = async (sql, params) => {
                             result: result,
                         })
                     );
-                console.log('연결 성공');
                 connection.release();   
                     
                 } else {

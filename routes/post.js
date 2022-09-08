@@ -11,7 +11,7 @@ router.get('/getInfoById', async(req,res) => {
     response.msg = response.result.length
     ? '/post/getInfoById succes'
     : '저장된 포스트 데이터 없음';
-    res.json(response);x
+    res.json(response);
 });
 
 router.get('/getPostOrderByTime', async (req, res) => {
@@ -50,9 +50,6 @@ router.get('/getPostOrderByTime', async (req, res) => {
         sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
     }
 
-    console.log(req.query.postType);
-    console.log(req.query.postType);
-    console.log(req.query.postType);
     params.push(String(parseFloat(latitude)-0.15))
     params.push(String(parseFloat(latitude)+0.15))
     params.push(String(parseFloat(longitude)-0.15))
