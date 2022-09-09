@@ -11,8 +11,8 @@ AWS.config.update({
     region: info.AWS_REGION,
 });
 const s3 = new AWS.S3();
-//s3 upload
-export const upload = multer({
+//s3 image upload
+export const uploadImage = multer({
     storage: multerS3({
         s3: s3,
         bucket: info.AWS_BUCKET_NAME,
@@ -20,7 +20,10 @@ export const upload = multer({
         key: function (req, file, cb) {
             cb(null, uuidv4() + '.' + file.originalname.split('.').pop());
         },
+        contentType: multerS3.AUTO_CONTENT_TYPE,
+        contentDisposition: 'inline',
     }),
+    limits: { fileSize: 5 * 1024 * 1024 },
 });
 
 //s3 delete
@@ -34,6 +37,7 @@ export const deleteFile = (key) => {
         else console.log(data);
     });
 }
+
 //s3 download
 export const downloadFile = (key) => {
     const params = {
