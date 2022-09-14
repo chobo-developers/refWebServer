@@ -34,13 +34,11 @@ router.post('/send', async (req, res) => {
 
 
 
-router.get('/test', (req, res, next) => {
-    let idx = String(req.body.idx);
+router.post('/test', (req, res, next) => {
     let title = req.body.title;
     let body = req.body.body;
-
     let target_token =
-        req.body.token
+        req.body.token;
 
     let message = {
         data: {

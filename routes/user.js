@@ -43,7 +43,7 @@ router.post('/updateFcmToken', async(req,res) => {
 
 });
 
-router.put('/user/updateLocation/:id', async(req,res) => {
+router.put('/updateLocation/:id', async(req,res) => {
     const id = req.params.id;
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
