@@ -32,8 +32,8 @@ export const sendEmail = async (id, postId,content) => {
     const emailOptions = { // 옵션값 설정
         from: info.mail,
         to: info.mail,
-        subject: "user id: " + id + `로 부터 신고 접수`,
-        html: "post id:" + postId + content
+        subject: "user id: " + id + `로 부터 신고 접수\n`,
+        html: "post id:" + postId + '\n' +content
     };
 
     // 전송
@@ -49,8 +49,9 @@ export const sendEmail = async (id, postId,content) => {
                     isConnect: true,
                     resultCode: 200,
                     msg: '전송완료',
-                    result: res
+                    result: 1
                 });
+                
             }
             transporter.close();
         });

@@ -130,23 +130,27 @@ router.post('/completeTrade', async(req,res) => {
     res.json(response);
 });
 
-router.post('/report', async(req,res) => {
+router.post('/sendMail', async(req,res) => {
     const id = req.body.id;
-    const content = req.body.data;
+    const content = req.body.content;
     const postId = req.body.postId;
+    
     const sql = 'update mainDB.user set report_point = mainDB.user.report_point+1 where id = (select user_id from mainDB.post where id = ?)';
     
-    requestDB(sql, postId).then(function(DBresloved){
-        sendEmail(id,postId,content).then(function(resolvedData){
-            res.json(resolvedData);
-            console.log("전송완료");
+    if(postId != 0 ){
+        requestDB(sql, postId).then(function(DBresolved){
+            /*console.log(DBresolved);*/
         }).catch(function(error){
+            console.log("sql 입력 실패");
             res.json(error);
-            console.log("전송실패");
         });
+}
+    sendEmail(id,postId,content).then(function(resolvedData){
+        res.json(resolvedData);
+        console.log("전송완료");
     }).catch(function(error){
-        console.log("sql 입력 실패");
         res.json(error);
+        console.log("전송실패");
     });
 
 
