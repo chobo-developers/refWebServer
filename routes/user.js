@@ -42,18 +42,16 @@ router.post('/updateFcmToken', async(req,res) => {
     res.json(response);
 
 });
-router.post('/updateLocation', async(req,res) => {
 
-    const id = req.body.id;
+router.put('/user/updateLocation/:id', async(req,res) => {
+    const id = req.params.id;
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
     const home_addr = req.body.home_addr;
     const sql = 'update user set latitude = ?, longitude = ?, home_addr = ? where id = ?';
-    const params = [latitude,longitude,home_addr,id];
+    const params = [latitude, longitude, home_addr, id];
     let response = await requestDB(sql,params);
-    response.result = response.result.affectedRows;
     res.json(response);
-
 });
 
 
