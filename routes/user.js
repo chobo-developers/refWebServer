@@ -51,6 +51,7 @@ router.put('/user/updateLocation/:id', async(req,res) => {
     const sql = 'update user set latitude = ?, longitude = ?, home_addr = ? where id = ?';
     const params = [latitude, longitude, home_addr, id];
     let response = await requestDB(sql,params);
+    response.result = response.result.affectedRows;
     res.json(response);
 });
 
