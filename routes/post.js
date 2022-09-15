@@ -34,14 +34,14 @@ router.get('/getPostOrderByTime', async (req, res) => {
 
 
     if (reqType === CATEGORY_SEARCH) {
-        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
         params.push(req.query.categoryId);
     } else if (reqType === TITLE_SEARCH) {
-        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
         const title = '%' + req.query.title + '%';
         params.push(title);
     } else {
-        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
     }
 
     params.push(String(parseFloat(latitude)-0.15))
@@ -61,7 +61,7 @@ router.get('/getPostOrderByDistance', async (req, res) => {
     const latitude = req.query.latitude;
     const longitude = req.query.longitude;
     const params = [latitude,longitude,latitude,currentTime];
-    const sql = 'select *, (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)-radians(?))+sin(radians(?))*sin(radians(latitude)))) as distance FROM post WHERE created_at < ? ORDER BY distance LIMIT 0,6';
+    const sql = 'select *, (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)-radians(?))+sin(radians(?))*sin(radians(latitude)))) as distance FROM post WHERE created_at < ? AND completed_at IS NULL ORDER BY distance LIMIT 0,6';
 
     const response = await requestDB(sql, params);
 
