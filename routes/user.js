@@ -109,6 +109,7 @@ router.post('/join', async (req, res) => {
     const email = req.body.email;
     const nickname = req.body.nickname;
     const homeAddr = req.body.home_addr;
+    const addrDetail = req.body.addr_detail;
     const reportPoint = req.body.report_point;
     const latitude = req.body.latitude;
     const longitude = req.body.longitude;
@@ -116,12 +117,13 @@ router.post('/join', async (req, res) => {
     const fcmToken = req.body.fcm;
 
     const sql =
-        'insert into user (fb_id,email,nickname,home_addr,report_point,latitude,longitude,created_at,fcm_token) values (?,?,?,?,?,?,?,?,?)';
+        'insert into user (fb_id,email,nickname,home_addr,addr_detail,report_point,latitude,longitude,created_at,fcm_token) values (?,?,?,?,?,?,?,?,?,?)';
     const params = [
         fbId,
         email,
         nickname,
         homeAddr,
+        addrDetail,
         reportPoint,
         latitude,
         longitude,
