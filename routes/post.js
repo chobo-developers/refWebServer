@@ -31,24 +31,19 @@ router.get('/getPostOrderByTime', async (req, res) => {
 
 
 
-    let params = [currentTime, postType];
+    let params = [latitude, longitude, latitude, currentTime, postType];
 
 
     if (reqType === CATEGORY_SEARCH) {
-        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND category_id= ? and latitude between ? and ? AND longitude between ? and ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT *, (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)-radians(?))+sin(radians(?))*sin(radians(latitude)))) as distance FROM post WHERE created_at < ? AND type = ? AND category_id = ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
         params.push(req.query.categoryId);
     } else if (reqType === TITLE_SEARCH) {
-        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ? AND title like ? and latitude between ? and ? AND longitude between ? and ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
+        sql = 'SELECT *, (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)-radians(?))+sin(radians(?))*sin(radians(latitude)))) as distance FROM post WHERE created_at < ? AND type = ? AND title like ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
         const title = '%' + req.query.title + '%';
         params.push(title);
-    } else {
-        sql = 'SELECT * FROM post WHERE created_at < ? AND type = ?  and latitude between ? and ? AND longitude between ? and ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
+    } else {//la long lat cre t
+        sql = 'SELECT *, (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)-radians(?))+sin(radians(?))*sin(radians(latitude)))) as distance FROM post WHERE created_at < ? AND type = ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
     }
-
-    params.push(String(parseFloat(latitude)-0.15))
-    params.push(String(parseFloat(latitude)+0.15))
-    params.push(String(parseFloat(longitude)-0.15))
-    params.push(String(parseFloat(longitude)+0.15))
 
     sql = sql + numberOfPost + ' OFFSET ' + currentIndex;
 
@@ -88,8 +83,8 @@ router.post('/create', async (req, res) => {
     const addr_detail = req.body.addr_detail;
     const validate_type = req.body.validate_type;
     const validate_date = req.body.validate_date;
-    const validate_img = await uploadImage(Buffer.from(req.body.validate_img, 'base64'))
-    const image1 = await uploadImage(Buffer.from(req.body.image1, 'base64'))
+    const validate_img = await (await uploadImage(Buffer.from(req.body.validate_img, 'base64'))).Location
+    const image1 = await (await uploadImage(Buffer.from(req.body.image1, 'base64'))).Location
     // const image2 = req.body.image2;
     // const image3 = req.body.image3;
     const created_at = req.body.created_at;

@@ -12,17 +12,17 @@ const pool = createPool({
 });
 //pool에서 커넥션을 얻은 커넥션아이디 출력
 pool.on('acquire', function (connection) {
-    console.log('Connection %d acquired', connection.threadId);
+    // console.log('Connection %d acquired', connection.threadId);
   });
   
 //connetion을 끊으면 %d부분에 connetion id가 출력
 pool.on('release', function (connection) {
-console.log('Connection %d released', connection.threadId);
+// console.log('Connection %d released', connection.threadId);
 });
 
 //사용 가능한 connetion이 존재하지 않으면 큐에 등록하고 순서를 대기
 pool.on('enqueue', function () {
-console.log('Waiting for available connection slot');
+// console.log('Waiting for available connection slot');
 });
 export const requestDB = async (sql, params) => {
     let response = {

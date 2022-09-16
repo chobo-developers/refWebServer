@@ -9,15 +9,14 @@ AWS.config.update({
 });
 const s3 = new AWS.S3();
 
-export const uploadImage = async (data) => {
+export const uploadImage = async (fileName, data) => {
     const params = {
       Bucket: info.AWS_BUCKET_NAME,
+      Key : info.AWS_ACCESS_KEY_ID,
+      SecrtKey : info.AWS_SECRET_ACCESS_KEY,
+      FileName: fileName
+      
     }
-    
-    if (info.AWS_ACCESS_KEY_ID) params.Key = bucketKey
-    // if (fileName) params.Key = fileName
-    // if (bucketKey && fileName) params.Key = `${bucketKey}${fileName}`
-    if (data) params.Body = Buffer.from(data)
     
     return await s3
       .upload(params)

@@ -7,10 +7,10 @@ const router = express.Router();
 
 //메시지 보내기
 router.post('/sendMessage',async (req,res)=>{
-    const chatId = req.body.chatId;
+    const chatId = req.body.chat_id;
     const message = req.body.content;
     const sentBy = req.body.from;
-    const createdAt = req.body.createdAt;
+    const createdAt = req.body.created_at;
 
     const title = "보낸사람: " + sentBy;
     let toId = sentBy;
@@ -45,14 +45,14 @@ router.post('/create',async (req,res)=>{
     const postId = req.body.postId;
     const contactId = req.body.contactId;
     const createdAt = req.body.createdAt;
-    const chatId = String(postId) + contactId;
+    const id = req.body.id;
 
 
     let sql = 'select * from chat where id = ?';
-    let response = await requestDB(sql,chatId);
+    let response = await requestDB(sql,id);
     if (response.result.length === 0 ){
         sql = 'insert into chat (id, post_id, user_id, created_at) value (?,?,?,?)';
-        const params = [chatId,postId,contactId,createdAt];
+        const params = [id,postId,contactId,createdAt];
         response = await requestDB(sql,params);
         console.log("new chat created successfully");
         response.result = 1;

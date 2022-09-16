@@ -13,6 +13,7 @@ admin.initializeApp({
   });
   
 export const requestFcm = async (token, title, message) => {
+    console.log(token);
     const fcmToken = token;
     const messaget = message;
     const titlet = title;
