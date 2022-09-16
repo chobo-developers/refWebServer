@@ -1,8 +1,5 @@
 //s3 import
 import AWS from 'aws-sdk';
-import multer from 'multer';
-import multerS3 from 'multer-s3';
-import { v4 as uuidv4 } from 'uuid';
 import info from '../info.json' assert {type : "json"};
 //s3 config
 AWS.config.update({
@@ -12,19 +9,20 @@ AWS.config.update({
 });
 const s3 = new AWS.S3();
 
-//s3 image upload
-export const uploadImage = multer({
-    storage: multerS3({
-        s3: s3,
-        bucket: info.AWS_BUCKET_NAME,
-        acl: 'public-read',
-        key: function (req, file, cb) {
-            cb(null, uuidv4() + '.' + file.originalname.split('.').pop());
-        },
-        contentType: multerS3.AUTO_CONTENT_TYPE
-    }), 
-    limits: { fileSize: 5 * 1024 * 1024 },
-});
+export const uploadImage = async (data) => {
+    const params = {
+      Bucket: info.AWS_BUCKET_NAME,
+    }
+    
+    if (info.AWS_ACCESS_KEY_ID) params.Key = bucketKey
+    // if (fileName) params.Key = fileName
+    // if (bucketKey && fileName) params.Key = `${bucketKey}${fileName}`
+    if (data) params.Body = Buffer.from(data)
+    
+    return await s3
+      .upload(params)
+      .promise()
+}
 
 //s3 delete
 export const deleteFile = (key) => {

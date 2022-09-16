@@ -1,6 +1,7 @@
 import { requestDB } from '../service/request.js';
 
 import { sendEmail } from '../service/mailService.js';
+import { uploadImage } from '../service/s3Service.js';
 import express from 'express';
 const router = express.Router();
 
@@ -87,8 +88,8 @@ router.post('/create', async (req, res) => {
     const addr_detail = req.body.addr_detail;
     const validate_type = req.body.validate_type;
     const validate_date = req.body.validate_date;
-    const validate_img = req.body.validate_img;
-    const image1 = req.body.image1;
+    const validate_img = await uploadImage(Buffer.from(req.body.validate_img, 'base64'))
+    const image1 = await uploadImage(Buffer.from(req.body.image1, 'base64'))
     // const image2 = req.body.image2;
     // const image3 = req.body.image3;
     const created_at = req.body.created_at;

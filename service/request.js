@@ -25,9 +25,6 @@ pool.on('enqueue', function () {
 console.log('Waiting for available connection slot');
 });
 export const requestDB = async (sql, params) => {
-
-
-
     let response = {
         isConnect: false,
         resultCode: 404,
