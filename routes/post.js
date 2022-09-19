@@ -41,7 +41,7 @@ router.get('/getPostOrderByTime', async (req, res) => {
         sql = 'SELECT *, (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)-radians(?))+sin(radians(?))*sin(radians(latitude)))) as distance FROM post WHERE created_at < ? AND type = ? AND title like ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
         const title = '%' + req.query.title + '%';
         params.push(title);
-    } else {//la long lat cre t
+    } else {
         sql = 'SELECT *, (6371*acos(cos(radians(?))*cos(radians(latitude))*cos(radians(longitude)-radians(?))+sin(radians(?))*sin(radians(latitude)))) as distance FROM post WHERE created_at < ? AND type = ? AND completed_at IS NULL ORDER BY created_at DESC LIMIT ';
     }
 
