@@ -12,7 +12,7 @@ router.get('/getInfoById', async (req, res) => {
     response.msg = response.result.length
         ? '/user/getInfoById succes'
         : '저장된 유저 데이터 없음';
-
+    console.log(response.msg);
     res.json(response);
 });
 
